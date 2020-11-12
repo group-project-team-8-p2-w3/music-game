@@ -10,7 +10,7 @@
       <div class="col">
       </div>
       <div class="col">
-        <form style="width: 500px;">
+        <form style="width: 500px;" @submit.prevent="login">
           <div class="form-group">
             <label>Username</label>
             <input type="text" class="form-control">
@@ -24,7 +24,12 @@
 
 <script>
 export default {
-  name: 'Login'
+  name: 'Login',
+  methods: {
+    login () {
+      this.$router.push({ name: 'Dashboard' })
+    }
+  }
 }
 </script>
 
