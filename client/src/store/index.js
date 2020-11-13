@@ -24,6 +24,9 @@ export default new Vuex.Store({
       router.push('/play/' + payload.id)
       context.room.question = payload.question
     },
+    SOCKET_NEXT_QUESTION (context, payload) {
+      context.room = payload
+    },
     setCurrentUser (context, payload) {
       context.currentUser = payload
     }

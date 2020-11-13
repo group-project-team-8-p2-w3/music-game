@@ -13,7 +13,7 @@ let rooms = []
 let users = []
 let musics = [
     {
-        id: 1,
+        id: 0,
         url: 'https://p.scdn.co/mp3-preview/51113c112bbba212201ccbaefc07e94275392dcf?cid=774b29d4f13844c495f206cafdad9c86',
         select: [
             {
@@ -32,12 +32,12 @@ let musics = [
         correct: 'A'
     },
     {
-        id: 2,
+        id: 1,
         url: 'https://p.scdn.co/mp3-preview/51113c112bbba212201ccbaefc07e94275392dcf?cid=774b29d4f13844c495f206cafdad9c86',
         select: [
             {
                 option: 'A',
-                title: 'BLACKPINK - Dududu Skidiikipapap'
+                title: 'Giring - Burungku'
             },
             {
                 option: 'B',
@@ -45,7 +45,7 @@ let musics = [
             },
             {
                 option: 'C',
-                title: 'Giring - Burungku'
+                title: 'BLACKPINK - Dududu Skidiikipapap'
             }
         ],
         correct: 'C'
@@ -102,13 +102,21 @@ io.on('connection', (socket) => {
 
     socket.on('checkAnswer', payload => {
         const { id, selected, name, roomId } = payload
-        console.log(rooms);
-        // let userId = rooms[roomId].users.findIndex(i => i.name == name)
-        // console.log(userId, 'dapet user nya');
-        // console.log(userId, 'DAPET NIHHHHH<<<<<<<<')
-        // if (musics[id].correct == selected) {
-        //     xxxx.score += 10
-        // }
+        let userId = rooms[roomId].users.findIndex(i => i.name == name)
+        if (musics[id].correct == selected) {
+            rooms[roomId].users[userId].score += 10
+        }
+        rooms[roomId].users[userId].currentQ ++
+        const newPayload = {
+            id: roomId,
+            question: {
+                id: musics[rooms[roomId].users[userId].currentQ].id,
+                url: musics[rooms[roomId].users[userId].currentQ].url,
+                select: musics[rooms[roomId].users[userId].currentQ].select
+            }
+        }
+
+        socket.emit('NEXT_QUESTION', newPayload)
     })
 });
   

@@ -13,7 +13,7 @@
         <form style="width: 500px;" @submit.prevent="login">
           <div class="form-group">
             <label>Username</label>
-            <input type="text" class="form-control" v-model="username">
+            <input type="text" class="form-control" required v-model="username">
           </div>
           <button type="submit" class="btn btn-primary">Submit</button>
         </form>
