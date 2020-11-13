@@ -70,7 +70,7 @@ io.on('connection', (socket) => {
     // * io.emit => Emit ke semua orang bahwa ada perubahan room
 
     socket.on('joinRoom', payload => { // * Emit dari /rooms
-        socket.join(payload, _ => {
+        socket.join(payload.roomId, _ => {
             let user = {
                 name: payload.user,
                 currentQ: 0,
