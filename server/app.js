@@ -9,29 +9,48 @@ app.use(cors)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-let users = []
 let rooms = []
-// let musics = [
-//     {
-//         id: 1,
-//         url: 'https://p.scdn.co/mp3-preview/51113c112bbba212201ccbaefc07e94275392dcf?cid=774b29d4f13844c495f206cafdad9c86',
-//         select: [
-//             {
-//                 option: 'A',
-//                 title: 'BLACKPINK - Dududu Skidiikipapap'
-//             },
-//             {
-//                 option: 'B',
-//                 title: 'LASKAR PELANGI - Takan terikat waktu'
-//             },
-//             {
-//                 option: 'C',
-//                 title: 'Giring - Burungku'
-//             }
-//         ],
-//         corret: 'A'
-//     }
-// ]
+let users = []
+let musics = [
+    {
+        id: 1,
+        url: 'https://p.scdn.co/mp3-preview/51113c112bbba212201ccbaefc07e94275392dcf?cid=774b29d4f13844c495f206cafdad9c86',
+        select: [
+            {
+                option: 'A',
+                title: 'BLACKPINK - Dududu Skidiikipapap'
+            },
+            {
+                option: 'B',
+                title: 'LASKAR PELANGI - Takan terikat waktu'
+            },
+            {
+                option: 'C',
+                title: 'Giring - Burungku'
+            }
+        ],
+        correct: 'A'
+    },
+    {
+        id: 2,
+        url: 'https://p.scdn.co/mp3-preview/51113c112bbba212201ccbaefc07e94275392dcf?cid=774b29d4f13844c495f206cafdad9c86',
+        select: [
+            {
+                option: 'A',
+                title: 'BLACKPINK - Dududu Skidiikipapap'
+            },
+            {
+                option: 'B',
+                title: 'LASKAR PELANGI - Takan terikat waktu'
+            },
+            {
+                option: 'C',
+                title: 'Giring - Burungku'
+            }
+        ],
+        correct: 'C'
+    }
+]
 
 io.on('connection', (socket) => {
     console.log('a user connected');
@@ -51,8 +70,13 @@ io.on('connection', (socket) => {
     // * io.emit => Emit ke semua orang bahwa ada perubahan room
 
     socket.on('joinRoom', payload => { // * Emit dari /rooms
-        socket.join(payload.roomId, _ => {
-            rooms[payload.roomId].users.push(payload.user)
+        socket.join(payload, _ => {
+            let user = {
+                name: payload.user,
+                currentQ: 0,
+                score: 0
+            }
+            rooms[payload.roomId].users.push(user)
             io.emit('UPDATED_ROOMS', rooms)
             io.to(payload.roomId).emit('ROOM_DETAIL', rooms[payload.roomId])
         })
@@ -63,10 +87,29 @@ io.on('connection', (socket) => {
     // * io.to => Kasihtau detail room dalam `/lobby/:id` bahwa dia lagi di room X
 
     socket.on('startGame', roomId => { // * Emit dari /lobby/:id
-        socket.broadcast.to(roomId).emit('START_GAME', roomId)
+        const payload = {
+            id: roomId,
+            question: {
+                id: musics[0].id,
+                url: musics[0].url,
+                select: musics[0].select
+            }
+        }
+        io.to(roomId).emit('START_GAME', payload)
     })
     // * Broadcast (Kasih tau) ke room yang memiliki id == roomId
     // * untuk mentrigger START_GAME di router (jadi ga semua orang ke trigger buat main)
+
+    socket.on('checkAnswer', payload => {
+        const { id, selected, name, roomId } = payload
+        console.log(rooms);
+        // let userId = rooms[roomId].users.findIndex(i => i.name == name)
+        // console.log(userId, 'dapet user nya');
+        // console.log(userId, 'DAPET NIHHHHH<<<<<<<<')
+        // if (musics[id].correct == selected) {
+        //     xxxx.score += 10
+        // }
+    })
 });
   
 http.listen(port, () => {

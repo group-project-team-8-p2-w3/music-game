@@ -4,6 +4,7 @@
       <p v-if="room.admin == currentUser">You can start the game</p>
       <button v-if="room.admin == currentUser" class="btn btn-primary" @click="startGame">Start</button>
       <p v-else>Waiting for the host to start the game....</p>
+      {{ room }}
       <div class="bg-secondary">
         <ListofParticipant
           :users="room.users"

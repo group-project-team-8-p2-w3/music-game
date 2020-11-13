@@ -21,7 +21,8 @@ export default new Vuex.Store({
       context.room = payload
     },
     SOCKET_START_GAME (context, payload) {
-      router.push('/play/' + payload)
+      router.push('/play/' + payload.id)
+      context.room.question = payload.question
     },
     setCurrentUser (context, payload) {
       context.currentUser = payload
