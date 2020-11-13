@@ -13,7 +13,7 @@
         <form style="width: 500px;" @submit.prevent="login">
           <div class="form-group">
             <label>Username</label>
-            <input type="text" class="form-control">
+            <input type="text" class="form-control" v-model="username">
           </div>
           <button type="submit" class="btn btn-primary">Submit</button>
         </form>
@@ -25,9 +25,17 @@
 <script>
 export default {
   name: 'Login',
+  data () {
+    return {
+      username: ''
+    }
+  },
   methods: {
     login () {
-      this.$router.push({ name: 'Dashboard' })
+      localStorage.setItem('username', this.username)
+      this.$socket.emit('login', this.username)
+      this.$router.push({ name: 'Rooms' })
+      this.username = ''
     }
   }
 }
