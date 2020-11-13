@@ -1,9 +1,11 @@
 <template>
   <div>
     <nav class="navbar navbar-light bg-light">
+      <h2></h2>
       <h2>List Rooms</h2>
       <form class="form-inline">
-        <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">Logout</button>
+        <label for="" style="margin-right: 10px;">User : {{ username }}</label>
+        <button class="btn btn-outline-danger my-2 my-sm-0" type="submit" @click="logout">Logout</button>
       </form>
     </nav>
 
@@ -50,6 +52,11 @@ import Swal from 'sweetalert2'
 
 export default {
   name: 'Rooms',
+  data () {
+    return {
+      username: localStorage.getItem('username')
+    }
+  },
   methods: {
     addRoom () {
       Swal.fire({
@@ -84,6 +91,10 @@ export default {
       this.$store.commit('setCurrentUser', localStorage.getItem('username'))
       this.$socket.emit('joinRoom', payload)
       this.$router.push('/lobby/' + id)
+    },
+    logout () {
+      localStorage.clear()
+      this.$router.push({ name: 'Login' })
     }
   },
   computed: {
